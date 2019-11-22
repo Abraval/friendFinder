@@ -320,14 +320,9 @@
 
             <!-- data-target="#results-modal" line326? -->
             <a data-dismiss="modal" data-toggle="modal">
-            <button
-              type="submit"
-             
-              class="btn btn-lg"
-              id="submit"
-            >
-              <i class="fa fa-check-circle" aria-hidden="true"></i> SUBMIT
-            </button>
+              <button type="submit" class="btn btn-lg" id="submit">
+                <i class="fa fa-check-circle" aria-hidden="true"></i> SUBMIT
+              </button>
             </a>
           </div>
         </div>
@@ -362,6 +357,45 @@
         </div>
       </div>
     </div>
+    <!--Alert Modal-->
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="alertModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="alertModal"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-danger" id="alertModal">Oops...</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <h4 class="text-info text-center">Please fill out all fields</h4>
+          </div>
+          <div class="text-right">
+            <button
+              type="button"
+              id="start"
+              class="btn btn-default mr-5 my-4"
+              data-dismiss="modal"
+            >
+              CLOSE
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- JAVASCRIPT JS FILES -->
     <script src="js/jquery.js"></script>
@@ -377,47 +411,72 @@
   <script type="text/javascript">
     $("#submit").on("click", function(event) {
       event.preventDefault();
-      var newFriend = {
-        name: $("#name").val(),
-        photo: $("#photo").val(),
-        scores: [
-          parseInt($("#questionOne").val()),
-          parseInt($("#questionTwo").val()),
-          parseInt($("#questionThree").val()),
-          parseInt($("#questionFour").val()),
-          parseInt($("#questionFive").val()),
-          parseInt($("#questionSix").val()),
-          parseInt($("#questionSeven").val()),
-          parseInt($("#questionEight").val()),
-          parseInt($("#questionNine").val()),
-          parseInt($("#questionTen").val())
-        ]
-      };
-      console.log(newFriend);
 
-      $.post("/api/friends", newFriend, function(data) {
-        if (data) {
-          console.log("You have been added to the database.");
-          $("#match-name").text(data.name);
-          $("#match-img").attr("src", data.photo);
-          $("#results-modal").modal("toggle");
-        } else {
-          console.log("Error");
-        }
+      // Form validation
+      var valid = true;
 
-        $("#name").val("");
-        $("#photo").val("");
-        $("#questionOne").val("");
-        $("#questionTwo").val("");
-        $("#questionThree").val("");
-        $("#questionFour").val("");
-        $("#questionFive").val("");
-        $("#questionSix").val("");
-        $("#questionSeven").val("");
-        $("#questionEight").val("");
-        $("#questionNine").val("");
-        $("#questionTen").val("");
-      });
+      if ($("#name").val() === "" || $("#photo").val() === "") {
+        valid = false;
+      } else if (
+        $("#questionOne").val() === "empty" ||
+        $("#questionTwo").val() === "empty" ||
+        $("#questionThree").val() === "empty" ||
+        $("#questionFour").val() === "empty" ||
+        $("#questionFive").val() === "empty" ||
+        $("#questionSix").val() === "empty" ||
+        $("#questionSeven").val() === "empty" ||
+        $("#questionEight").val() === "empty" ||
+        $("#questionNine").val() === "empty" ||
+        $("#questionTen").val() === "empty"
+      ) {
+        valid = false;
+      }
+      if (valid === true) {
+        var newFriend = {
+          name: $("#name").val(),
+          photo: $("#photo").val(),
+          scores: [
+            parseInt($("#questionOne").val()),
+            parseInt($("#questionTwo").val()),
+            parseInt($("#questionThree").val()),
+            parseInt($("#questionFour").val()),
+            parseInt($("#questionFive").val()),
+            parseInt($("#questionSix").val()),
+            parseInt($("#questionSeven").val()),
+            parseInt($("#questionEight").val()),
+            parseInt($("#questionNine").val()),
+            parseInt($("#questionTen").val())
+          ]
+        };
+        // console.log(newFriend);
+
+        $.post("/api/friends", newFriend, function(data) {
+          if (data) {
+            // console.log("You have been added to the database.");
+            $("#match-name").text(data.name);
+            $("#match-img").attr("src", data.photo);
+            $("#results-modal").modal("toggle");
+          } else {
+            console.log("Error");
+          }
+        });
+      } else {
+        // alert("Survey is incomplete!");
+        $('#alertModal').modal('toggle')
+      }
+
+      $("#name").val("");
+      $("#photo").val("");
+      $("#questionOne").val("");
+      $("#questionTwo").val("");
+      $("#questionThree").val("");
+      $("#questionFour").val("");
+      $("#questionFive").val("");
+      $("#questionSix").val("");
+      $("#questionSeven").val("");
+      $("#questionEight").val("");
+      $("#questionNine").val("");
+      $("#questionTen").val("");
     });
   </script>
 </html>
